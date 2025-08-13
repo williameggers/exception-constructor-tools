@@ -14,12 +14,14 @@
         }
     ],
     "require": {
-        "php": "^5.6|^7.0"
+        "php": ">=8.1"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^1.10",
-        "phpunit/phpunit": "^5.5",
-        "squizlabs/php_codesniffer": "*"
+        "friendsofphp/php-cs-fixer": "^3.85",
+        "phpstan/phpstan": "^2.1",
+        "phpunit/phpunit": "^9.6 || ^7.5 || ^11.5",
+        "rector/rector": "^2.1",
+        "squizlabs/php_codesniffer": "^3.9"
     },
     "autoload": {
         "psr-4": {
@@ -44,8 +46,18 @@
             "phpcs --standard=psr2 src tests",
             "php-cs-fixer fix --dry-run --verbose"
         ],
+        "analyse": [
+            "phpstan analyse --memory-limit=1G"
+        ],
+        "rector": [
+            "rector process src tests --ansi"
+        ],
+        "rector:dry": [
+            "rector process src tests --dry-run --ansi"
+        ],
         "test": [
             "@cs:check",
+            "@analyse",
             "phpunit --colors=always"
         ]
     }

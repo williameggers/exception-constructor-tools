@@ -1,110 +1,112 @@
 <?php
 
+declare(strict_types=1);
+
 namespace tests\unit\TomPHP;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use tests\support\ExampleException;
 use tests\support\ExampleExtendedException;
 
-final class ExceptionConstructorToolsTest extends PHPUnit_Framework_TestCase
+final class ExceptionConstructorToolsTest extends TestCase
 {
-    public function testItFormatsTheMessage()
+    public function testItFormatsTheMessage(): void
     {
-        $exception = ExampleException::fromFormatString('example %s', 'message');
+        $exampleException = ExampleException::fromFormatString('example %s', 'message');
 
-        $this->assertSame('example message', $exception->getMessage());
+        $this->assertSame('example message', $exampleException->getMessage());
     }
 
-    public function testItCanAddAnExceptionCode()
+    public function testItCanAddAnExceptionCode(): void
     {
-        $exception = ExampleException::fromCode(909);
+        $exampleException = ExampleException::fromCode(909);
 
-        $this->assertSame(909, $exception->getCode());
+        $this->assertSame(909, $exampleException->getCode());
     }
 
-    public function testItCanAddAPreviousException()
+    public function testItCanAddAPreviousException(): void
     {
-        $previous = new \RuntimeException();
+        $runtimeException = new \RuntimeException();
 
-        $exception = ExampleException::fromPreviousException($previous);
+        $exampleException = ExampleException::fromPreviousException($runtimeException);
 
-        $this->assertSame($previous, $exception->getPrevious());
+        $this->assertSame($runtimeException, $exampleException->getPrevious());
     }
 
-    public function testItUsesLateStaticBindings()
+    public function testItUsesLateStaticBindings(): void
     {
-        $exception = ExampleExtendedException::fromFormatString('', []);
+        $exampleExtendedException = ExampleExtendedException::fromFormatString('', []);
 
-        $this->assertInstanceOf('tests\support\ExampleExtendedException', $exception);
+        $this->assertInstanceOf('tests\support\ExampleExtendedException', $exampleExtendedException);
     }
 
-    public function testItConvertsABuiltInTypeToAMessage()
+    public function testItConvertsABuiltInTypeToAMessage(): void
     {
-        $exception = ExampleException::withTypeInMessage(99);
+        $exampleException = ExampleException::withTypeInMessage(99);
 
-        $this->assertSame('[integer]', $exception->getMessage());
+        $this->assertSame('[integer]', $exampleException->getMessage());
     }
 
-    public function testItConvertsAnObjectToAClassNameMessage()
+    public function testItConvertsAnObjectToAClassNameMessage(): void
     {
-        $exception = ExampleException::withTypeInMessage(new \stdClass());
+        $exampleException = ExampleException::withTypeInMessage(new \stdClass());
 
-        $this->assertSame('stdClass', $exception->getMessage());
+        $this->assertSame('stdClass', $exampleException->getMessage());
     }
 
-    public function testItConvertsAStringValueToAMessage()
+    public function testItConvertsAStringValueToAMessage(): void
     {
-        $exception = ExampleException::withValueInMessage('value');
+        $exampleException = ExampleException::withValueInMessage('value');
 
-        $this->assertSame('"value"', $exception->getMessage());
+        $this->assertSame('"value"', $exampleException->getMessage());
     }
 
-    public function testItConvertsAStringWithQuotesValueToAMessage()
+    public function testItConvertsAStringWithQuotesValueToAMessage(): void
     {
-        $exception = ExampleException::withValueInMessage('"value"');
+        $exampleException = ExampleException::withValueInMessage('"value"');
 
-        $this->assertSame('"\"value\""', $exception->getMessage());
+        $this->assertSame('"\"value\""', $exampleException->getMessage());
     }
 
-    public function testItConvertsATrueValueToAMessage()
+    public function testItConvertsATrueValueToAMessage(): void
     {
-        $exception = ExampleException::withValueInMessage(true);
+        $exampleException = ExampleException::withValueInMessage(true);
 
-        $this->assertSame('true', $exception->getMessage());
+        $this->assertSame('true', $exampleException->getMessage());
     }
 
-    public function testItConvertsAFalseValueToAMessage()
+    public function testItConvertsAFalseValueToAMessage(): void
     {
-        $exception = ExampleException::withValueInMessage(false);
+        $exampleException = ExampleException::withValueInMessage(false);
 
-        $this->assertSame('false', $exception->getMessage());
+        $this->assertSame('false', $exampleException->getMessage());
     }
 
-    public function testItConvertsAnIntValueToAMessage()
+    public function testItConvertsAnIntValueToAMessage(): void
     {
-        $exception = ExampleException::withValueInMessage(12);
+        $exampleException = ExampleException::withValueInMessage(12);
 
-        $this->assertSame('12', $exception->getMessage());
+        $this->assertSame('12', $exampleException->getMessage());
     }
 
-    public function testItConvertsAListOfStringsToAMessage()
+    public function testItConvertsAListOfStringsToAMessage(): void
     {
-        $exception = ExampleException::withListInMessage(['a', 'b', 'c']);
+        $exampleException = ExampleException::withListInMessage(['a', 'b', 'c']);
 
-        $this->assertSame('["a", "b", "c"]', $exception->getMessage());
+        $this->assertSame('["a", "b", "c"]', $exampleException->getMessage());
     }
 
-    public function testItConvertsAnEmptyListToAMessage()
+    public function testItConvertsAnEmptyListToAMessage(): void
     {
-        $exception = ExampleException::withListInMessage([]);
+        $exampleException = ExampleException::withListInMessage([]);
 
-        $this->assertSame('[]', $exception->getMessage());
+        $this->assertSame('[]', $exampleException->getMessage());
     }
 
-    public function testItConvertsAListOfIntsToAMessage()
+    public function testItConvertsAListOfIntsToAMessage(): void
     {
-        $exception = ExampleException::withListInMessage([1, 2, 3]);
+        $exampleException = ExampleException::withListInMessage([1, 2, 3]);
 
-        $this->assertSame('[1, 2, 3]', $exception->getMessage());
+        $this->assertSame('[1, 2, 3]', $exampleException->getMessage());
     }
 }

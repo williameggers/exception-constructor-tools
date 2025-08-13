@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace tests\support;
 
 use TomPHP\ExceptionConstructorTools;
@@ -8,32 +10,42 @@ class ExampleException extends \RuntimeException
 {
     use ExceptionConstructorTools;
 
-    public static function fromFormatString($format, $param)
+    /**
+     * @param array<bool|float|int|string|null>|bool|float|int|string|null $param
+     */
+    public static function fromFormatString(string $format, array|bool|float|int|string|null $param): static
     {
-        return self::create($format, [$param]);
+        if (!is_array($param)) {
+            $param = [$param];
+        }
+
+        return self::create($format, $param);
     }
 
-    public static function fromCode($code)
+    public static function fromCode(int $code): static
     {
         return self::create('', [], $code);
     }
 
-    public static function fromPreviousException($previous)
+    public static function fromPreviousException(?\Exception $exception): static
     {
-        return self::create('', [], 0, $previous);
+        return self::create('', [], 0, $exception);
     }
 
-    public static function withTypeInMessage($param)
+    public static function withTypeInMessage(mixed $param): static
     {
         return self::create(self::typeToString($param));
     }
 
-    public static function withValueInMessage($value)
+    public static function withValueInMessage(mixed $value): static
     {
         return self::create(self::valueToString($value));
     }
 
-    public static function withListInMessage($param)
+    /**
+     * @param array<mixed> $param
+     */
+    public static function withListInMessage(array $param): static
     {
         return self::create(self::listToString($param));
     }

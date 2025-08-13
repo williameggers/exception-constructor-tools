@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace TomPHP;
 
 /**
@@ -11,69 +13,64 @@ trait ExceptionConstructorTools
     /**
      * Create an instance of the exception with a formatted message.
      *
-     * @param string     $message  The exception message in sprintf format.
-     * @param array      $params   The sprintf parameters for the message.
-     * @param int        $code     Numeric exception code.
-     * @param \Exception $previous The previous exception.
-     *
-     * @return static
+     * @param string                            $message   The exception message in sprintf format.
+     * @param array<bool|float|int|string|null> $params    The sprintf parameters for the message.
+     * @param int                               $code      Numeric exception code.
+     * @param \Exception                        $exception The previous exception.
      */
     protected static function create(
-        $message,
+        string $message,
         array $params = [],
-        $code = 0,
-        \Exception $previous = null
-    ) {
-        return new static(sprintf($message, ...$params), $code, $previous);
+        int $code = 0,
+        ?\Exception $exception = null
+    ): static {
+        $class           = static::class;
+        $reflectionClass = new \ReflectionClass($class);
+        return $reflectionClass->newInstance(sprintf($message, ...$params), $code, $exception);
     }
 
     /**
      * Returns a string representation of the type of a variable.
-     *
-     * @param mixed $variable
-     *
-     * @return string
      */
-    protected static function typeToString($variable)
+    protected static function typeToString(mixed $variable): string
     {
         return is_object($variable)
-            ? get_class($variable)
+            ? $variable::class
             : '[' . gettype($variable) . ']';
     }
 
     /**
      * Returns a string representation of the value.
-     *
-     * @param mixed $value
-     *
-     * @return string
      */
-    protected static function valueToString($value)
+    protected static function valueToString(mixed $value): string
     {
-        switch (gettype($value)) {
-            case 'string':
-                return '"' . addslashes($value) . '"';
-            case 'boolean':
-                return $value ? 'true' : 'false';
-            default:
-                return $value;
+        if (!is_string($value)
+            && !is_numeric($value)
+            && !is_bool($value)
+            && !$value instanceof \Stringable
+        ) {
+            throw new \InvalidArgumentException("Value isn't stringable");
         }
+
+        return match (gettype($value)) {
+            'string'  => '"' . addslashes($value) . '"',
+            'boolean' => $value ? 'true' : 'false',
+            default   => (string) $value,
+        };
     }
 
     /**
      * Returns the list as a formatted string.
      *
-     * @param string[] $list
-     *
-     * @return string
+     * @param array<mixed> $list
      */
-    protected static function listToString(array $list)
+    protected static function listToString(array $list): string
     {
-        if (empty($list)) {
+        if ($list === []) {
             return '[]';
         }
 
-        $list = array_map(['static', 'valueToString'], $list);
+        $list = array_map(fn ($item): string => static::valueToString($item), $list);
 
         return '[' . implode(', ', $list) . ']';
     }
