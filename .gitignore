@@ -1,3 +1,6 @@
 /vendor/
 .php_cs.cache
 composer.lock
+.devcontainer
+.php-cs-fixer.cache
+.phpunit.result.cache
